@@ -17,17 +17,17 @@ public class VotacaoCliente {
 		Votacao votacao;
 		List<Candidato> candidatos;
 		Registry registry;
-		
+
 		try {
 
 			registry = LocateRegistry.getRegistry(8080);
-			System.out.println("Encontrou o registry");
-			
+			//System.out.println("Encontrou o registry");
+
 			votacao = (Votacao) registry.lookup("localhost/Votacao");
-			
+
 			candidatos = votacao.getCandidatos();
-			
-			System.out.println(candidatos.toString());
+
+			listarCandidatos(candidatos);
 
 		} catch (AccessException e) {
 			System.out.println("Erro de Acesso" + e.getMessage());
@@ -38,6 +38,23 @@ public class VotacaoCliente {
 		} catch (Exception e) {
 			System.out.println("Client: " + e.getMessage());
 		}
+
+	}
+
+	private static void listarCandidatos(List<Candidato> candidatos) {
+
+		System.out.println("************************************\n");
+		System.out.println("*********    Candidatos    **********\n");
+
+		for (int i = 0; i < candidatos.size(); i++) {
+
+			System.out.println(candidatos.get(i).getNome() +
+					" --------------------------- " +
+					candidatos.get(i).getNumero());
+
+		}
+
+		System.out.println("\n************************************");
 
 	}
 
