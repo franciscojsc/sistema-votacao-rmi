@@ -1,7 +1,11 @@
 package br.com.franciscochaves.model;
 
-public class Voto {
+import java.io.Serializable;
 
+public class Voto implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
 	private Candidato candidato;
 	private Eleitor eleito;
 	
