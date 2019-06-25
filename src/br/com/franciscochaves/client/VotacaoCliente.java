@@ -34,38 +34,71 @@ public class VotacaoCliente {
 			ipDaMaquina = InetAddress.getLocalHost().getHostAddress();
 			eleitor = new Eleitor(ipDaMaquina);
 
-			candidatos = votacao.getCandidatos();
+			if (votacao.isEleitor(eleitor)) {
 
-			listarCandidatos(candidatos);
+				candidatos = votacao.getCandidatos();
 
-			teclado = new Scanner(System.in);
+				listarCandidatos(candidatos);
 
-			while (true) {
+				teclado = new Scanner(System.in);
 
-				System.out.println("Digite o número do candidato para realizar sua votação:");
+				while (true) {
 
-				int voto = teclado.nextInt();
+					int voto;
 
-				candidato = verificarCandidato(voto, votacao.getCandidatos());
+					while (true) {
 
-				if (candidato != null) {
+						System.out.println("Digite o número do candidato para realizar sua votação:");
 
-					if (votacao.setVoto(eleitor, candidato)) {
+						String v = teclado.next();
 
-						System.out.println("\n");
-						System.out.println(votacao.getApuracaoEleicao());
+						if (isNumero(v)) {
+
+							voto = Integer.parseInt(v);
+							break;
+
+						} else {
+
+							System.out.println("Somente número sem ponto ou vírgula!!!\n");
+
+						}
+
+					}
+
+					candidato = verificarCandidato(voto, votacao.getCandidatos());
+
+					if (candidato != null) {
+
+						if (votacao.setVoto(eleitor, candidato)) {
+
+							System.out.println("\nVoto realizado com sucesso!!!\n");
+							System.out.println("Apuração dos votos:");
+							System.out.println(votacao.getApuracaoEleicao());
+
+							if (!votacao.isEleitor(eleitor)) {
+
+								System.out.println("Você já realizou sua votação, atigiu o limite de votos!!!");
+								break;
+
+							}
+
+						} else {
+
+							System.err.println("Aconteceu algum problema!!! Tente novamnete.");
+
+						}
 
 					} else {
 
-						System.out.println("Atigiu o limite de votos");
-						System.out.println(votacao.getApuracaoEleicao());
+						System.out.println("\nCandidato não existe, tente novamente!!!\n");
+
 					}
-
-				} else {
-
-					System.out.println("Candidato não existe");
-
 				}
+
+			} else {
+
+				System.out.println("Você já realizou sua votação, atigiu o limite de votos!!!");
+
 			}
 
 		} catch (AccessException e) {
@@ -74,18 +107,29 @@ public class VotacaoCliente {
 
 		} catch (RemoteException e) {
 
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
 
 		} catch (NotBoundException e) {
 
-			System.out.println("Erro de Not Bound." + e.getMessage());
+			System.err.println("Erro de Not Bound." + e.getMessage());
 
 		} catch (Exception e) {
 
-			System.out.println("Client: " + e.getMessage());
+			System.err.println("Error - Client: " + e.getMessage());
 
 		}
 
+	}
+
+	private static boolean isNumero(String v) {
+
+		for (int i = 0; i < v.length(); i++) {
+			if (!Character.isDigit(v.charAt(i))) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static Candidato verificarCandidato(int voto, List<Candidato> candidatos) {
@@ -110,7 +154,8 @@ public class VotacaoCliente {
 
 		for (Candidato c : candidatos) {
 
-			System.out.println("[ Candidato: " +c.getNome() + " ] --------------------------- [ Número: " + c.getNumero() + " ]");
+			System.out.println(
+					"[ Candidato: " + c.getNome() + " ] --------------------------- [ Número: " + c.getNumero() + " ]");
 
 		}
 

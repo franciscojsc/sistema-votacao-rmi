@@ -36,9 +36,7 @@ public class VotacaoServant extends  UnicastRemoteObject implements Votacao,Seri
 	@Override
 	public boolean setVoto(Eleitor eleitor, Candidato candidato) throws RemoteException {
 		
-		int quantidadeDeVotos = contarVotoEleitor(votos, eleitor);
-		
-		if(quantidadeDeVotos < quantidadeMaximaVoto) {
+		if(isEleitor(eleitor)) {
 			
 			Voto voto = new Voto(eleitor, candidato);
 			votos.add(voto);
@@ -54,6 +52,19 @@ public class VotacaoServant extends  UnicastRemoteObject implements Votacao,Seri
 		
 		return contabilizarVoto(votos, candidatos);
 		
+	}
+	
+	@Override
+	public boolean isEleitor(Eleitor eleitor) {
+		
+		int quantidadeDeVotos = contarVotoEleitor(votos, eleitor);
+		
+		if(quantidadeDeVotos < quantidadeMaximaVoto) {
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private int contarVotoEleitor(List<Voto> votos, Eleitor eleitor) {
@@ -91,6 +102,6 @@ public class VotacaoServant extends  UnicastRemoteObject implements Votacao,Seri
 		return apuracao.toString();
 
 	}
-	
+
 	
 }

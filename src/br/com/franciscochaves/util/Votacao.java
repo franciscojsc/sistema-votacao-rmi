@@ -12,5 +12,6 @@ public interface Votacao extends Remote{
 	public List<Candidato> getCandidatos() throws RemoteException ;
 	public boolean setVoto(Eleitor eleitor, Candidato candidato) throws RemoteException;
 	public String getApuracaoEleicao() throws RemoteException;
+	public boolean isEleitor(Eleitor eleitor) throws RemoteException;
 	
 }
